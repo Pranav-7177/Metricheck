@@ -1,0 +1,134 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "MetriCheckRealPackageValidationSchema",
+  "description": "Validation schema for MetriCheck physical retail package annotations, provenance, and multi-annotator reviews.",
+  "type": "object",
+  "required": [
+    "product_id",
+    "dataset_type",
+    "category",
+    "package_type",
+    "images",
+    "ground_truth"
+  ],
+  "properties": {
+    "product_id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]+$",
+      "description": "Unique product commodity identifier (e.g. real_prod_01)"
+    },
+    "dataset_type": {
+      "type": "string",
+      "enum": ["REAL_PHOTO", "SYNTHETIC_CONTROLLED", "MIXED"],
+      "description": "Dataset classification. Must be REAL_PHOTO for genuine physical packaging."
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "Food & Grocery",
+        "Cosmetics & Personal Care",
+        "Household Products",
+        "Other Packaged Commodities"
+      ]
+    },
+    "package_type": {
+      "type": "string",
+      "enum": [
+        "Plastic Pouch",
+        "Foil Laminate Pouch",
+        "Folding Carton",
+        "Corrugated Box",
+        "Plastic Bottle (PET/HDPE)",
+        "Glass Bottle",
+        "Metal Tin / Can",
+        "Flexible Tube"
+      ]
+    },
+    "split": {
+      "type": "string",
+      "enum": ["train", "val", "test", "benchmark"],
+      "default": "benchmark",
+      "description": "Product-level partition split. All images of this product stay together."
+    },
+    "provenance": {
+      "type": "object",
+      "properties": {
+        "brand_name": { "type": "string" },
+        "retail_category_l1": { "type": "string" },
+        "retail_category_l2": { "type": "string" },
+        "acquisition_state": { "type": "string" },
+        "acquisition_city": { "type": "string" },
+        "acquisition_date": { "type": "string", "format": "date" },
+        "barcode_ean": { "type": ["string", "null"] },
+        "camera_device": { "type": "string" },
+        "lighting_condition": {
+          "type": "string",
+          "enum": ["diffuse_daylight", "direct_fluorescent", "low_light", "mixed"]
+        },
+        "capture_angle": { "type": "string" },
+        "package_condition": {
+          "type": "string",
+          "enum": ["pristine", "crinkled", "creased", "scratched", "faded"]
+        }
+      }
+    },
+    "images": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["image_id", "file_name", "role"],
+        "properties": {
+          "image_id": { "type": "string" },
+          "file_name": { "type": "string" },
+          "role": {
+            "type": "string",
+            "enum": [
+              "front",
+              "back",
+              "side",
+              "left_side",
+              "right_side",
+              "top",
+              "bottom",
+              "close_up",
+              "unknown"
+            ]
+          },
+          "is_calibrated": { "type": "boolean", "default": false },
+          "reference_type": { "type": ["string", "null"] },
+          "reference_dimension_mm": { "type": ["number", "null"] }
+        }
+      }
+    },
+    "ground_truth": {
+      "type": "object",
+      "description": "Ground truth statutory declarations. Each field can be a string, null (absent), or detailed declaration object.",
+      "required": [
+        "PRODUCT_NAME",
+        "MRP",
+        "NET_QUANTITY",
+        "MANUFACTURER",
+        "PACKER",
+        "IMPORTER",
+        "MANUFACTURING_DATE",
+        "PACKING_DATE",
+        "EXPIRY_DATE",
+        "BEST_BEFORE",
+        "CONSUMER_CARE",
+        "COUNTRY_OF_ORIGIN"
+      ]
+    },
+    "multi_annotator_review": {
+      "type": "object",
+      "properties": {
+        "annotator_1_id": { "type": "string" },
+        "annotator_2_id": { "type": ["string", "null"] },
+        "adjudicator_id": { "type": ["string", "null"] },
+        "agreement_score": { "type": ["number", "null"] },
+        "disputes_resolved": { "type": "boolean" },
+        "review_date": { "type": "string", "format": "date" }
+      }
+    }
+  }
+}

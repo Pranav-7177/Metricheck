@@ -2,7 +2,7 @@ import cv2
 import numpy as np
 from PIL import Image
 import os
-from typing import Dict, Any, Tuple, Optional
+from typing import Dict, Any, Tuple, Optional, List
 from app.models.models import ImageQualityStatus
 
 class ImageQualityService:
@@ -46,13 +46,36 @@ class ImageQualityService:
             gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
             laplacian_var = float(cv2.Laplacian(gray, cv2.CV_64F).var())
 
-            # 2. Glare and lighting assessment
+            # 2. Glare, shadow, and lighting assessment
             hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
             v_channel = hsv[:, :, 2]
             glare_pixels = np.sum(v_channel >= 245)
+            shadow_pixels = np.sum(v_channel <= 30)
             total_pixels = h * w
             glare_percentage = float((glare_pixels / max(total_pixels, 1)) * 100.0)
+            shadow_percentage = float((shadow_pixels / max(total_pixels, 1)) * 100.0)
             avg_brightness = float(np.mean(v_channel))
+
+            # Local contrast
+            min_val, max_val = float(np.min(gray)), float(np.max(gray))
+            contrast_score = round((max_val - min_val) / max(max_val + min_val, 1e-5), 2)
+
+            # Perspective skew estimation (aspect variance of dominant edges)
+            perspective_skew = False
+            try:
+                edges = cv2.Canny(gray, 50, 150, apertureSize=3)
+                lines = cv2.HoughLinesP(edges, 1, np.pi / 180, threshold=100, minLineLength=80, maxLineGap=10)
+                if lines is not None and len(lines) >= 4:
+                    angles = []
+                    for l in lines[:10]:
+                        x1, y1, x2, y2 = l[0]
+                        angle = np.degrees(np.arctan2(y2 - y1, x2 - x1)) % 180
+                        angles.append(angle)
+                    skewed_angles = [a for a in angles if 15 < a < 75 or 105 < a < 165]
+                    if len(skewed_angles) > len(angles) * 0.4:
+                        perspective_skew = True
+            except Exception:
+                perspective_skew = False
 
             # Lighting score (100 is ideal ~120-180 brightness, drops if too dark <50 or too bright >220)
             if avg_brightness < 60:
@@ -84,6 +107,12 @@ class ImageQualityService:
             elif glare_percentage > 5.0:
                 notes.append(f"Minor reflections detected ({glare_percentage:.1f}%).")
 
+            if shadow_percentage > 20.0:
+                notes.append(f"Heavy shadow regions detected ({shadow_percentage:.1f}% dark area).")
+
+            if perspective_skew:
+                notes.append("Perspective distortion: package panel photographed at an angle.")
+
             if avg_brightness < 50:
                 notes.append("Under-exposed: lighting is dim.")
             elif avg_brightness > 210:
@@ -95,17 +124,31 @@ class ImageQualityService:
             # Compute normalized quality score (0.0 to 1.0)
             blur_norm = min(1.0, max(0.0, laplacian_var / 150.0))
             glare_penalty = min(1.0, glare_percentage / 25.0)
+            shadow_penalty = min(1.0, shadow_percentage / 30.0)
             lighting_norm = lighting_score / 100.0
             res_ok = bool(w >= cls.MIN_ACCEPTABLE_WIDTH and h >= cls.MIN_ACCEPTABLE_HEIGHT)
             res_factor = 1.0 if res_ok else 0.6
-            overall_score = round(max(0.0, min(1.0, (blur_norm * 0.45 + (1.0 - glare_penalty) * 0.25 + lighting_norm * 0.30) * res_factor)), 2)
+            overall_score = round(max(0.0, min(1.0, (blur_norm * 0.40 + (1.0 - glare_penalty) * 0.20 + (1.0 - shadow_penalty) * 0.10 + lighting_norm * 0.30) * res_factor)), 2)
 
-            return {
+            # Master Prompt 10 Decision Tier
+            if status in (ImageQualityStatus.GOOD, ImageQualityStatus.ACCEPTABLE) and overall_score >= 0.60:
+                quality_decision = "ACCEPTABLE"
+            elif laplacian_var < 15.0 or (glare_percentage > 35.0 and laplacian_var < 30.0) or (w < 300 or h < 300):
+                quality_decision = "UNSUITABLE"
+            else:
+                quality_decision = "DEGRADED"
+
+            result_dict = {
                 "quality_status": status,
+                "quality_decision": quality_decision,
                 "quality_score": overall_score,
                 "blur_score": round(laplacian_var, 2),
                 "glare_score": round(glare_percentage, 2),
                 "glare_percentage": round(glare_percentage, 2),
+                "shadow_score": round(shadow_percentage, 2),
+                "shadow_percentage": round(shadow_percentage, 2),
+                "contrast_score": contrast_score,
+                "perspective_skew": perspective_skew,
                 "lighting_score": round(lighting_score, 2),
                 "brightness_score": round(avg_brightness / 255.0, 2),
                 "resolution_w": w,
@@ -114,14 +157,21 @@ class ImageQualityService:
                 "preprocessing_applied": False,
                 "quality_notes": " | ".join(notes)
             }
+            result_dict["retake_guidance"] = cls.generate_retake_guidance(result_dict)
+            return result_dict
 
         except Exception as e:
-            return {
+            fallback_dict = {
                 "quality_status": ImageQualityStatus.POOR,
+                "quality_decision": "DEGRADED",
                 "quality_score": 0.2,
                 "blur_score": 25.0,
                 "glare_score": 0.0,
                 "glare_percentage": 0.0,
+                "shadow_score": 0.0,
+                "shadow_percentage": 0.0,
+                "contrast_score": 0.5,
+                "perspective_skew": False,
                 "lighting_score": 50.0,
                 "brightness_score": 0.5,
                 "resolution_w": 0,
@@ -130,6 +180,54 @@ class ImageQualityService:
                 "preprocessing_applied": False,
                 "quality_notes": f"Quality assessment fallback: {str(e)}"
             }
+            fallback_dict["retake_guidance"] = cls.generate_retake_guidance(fallback_dict)
+            return fallback_dict
+
+    @classmethod
+    def generate_retake_guidance(
+        cls,
+        quality_data: Dict[str, Any],
+        has_cropped_text: bool = False
+    ) -> List[str]:
+        """
+        Generates specific, actionable guidance based on measured physical conditions.
+        Deduplicates advice so identical messages are never repeated.
+        """
+        guidance: List[str] = []
+        seen = set()
+
+        def add_tip(msg: str):
+            if msg not in seen:
+                seen.add(msg)
+                guidance.append(msg)
+
+        blur_val = quality_data.get("blur_score", 100.0)
+        glare_val = quality_data.get("glare_score", quality_data.get("glare_percentage", 0.0))
+        shadow_val = quality_data.get("shadow_score", quality_data.get("shadow_percentage", 0.0))
+        rw = quality_data.get("resolution_w", 1000)
+        rh = quality_data.get("resolution_h", 1000)
+        bright_val = quality_data.get("brightness_score", 0.6)
+        skew_val = quality_data.get("perspective_skew", False)
+
+        if blur_val < cls.BLUR_THRESHOLD_POOR:
+            add_tip("Retake the image while holding the camera steady.")
+
+        if glare_val > 5.0 or glare_val > cls.GLARE_THRESHOLD_PERCENT:
+            add_tip("Tilt the package or move away from direct reflections.")
+
+        if rw < cls.MIN_ACCEPTABLE_WIDTH or rh < cls.MIN_ACCEPTABLE_HEIGHT:
+            add_tip("Move closer or upload a higher-resolution image.")
+
+        if has_cropped_text:
+            add_tip("Include the complete declaration and surrounding label.")
+
+        if skew_val:
+            add_tip("Photograph the panel more directly.")
+
+        if bright_val < 0.20 or bright_val > 0.94 or shadow_val > 25.0:
+            add_tip("Use even lighting without harsh shadows.")
+
+        return guidance
 
     @classmethod
     def preprocess_image_for_ocr(cls, input_path: str, output_path: str) -> bool:
@@ -173,6 +271,7 @@ class ImageQualityService:
                     "preprocessed_path": preprocessed_output_path,
                     "preprocessed_blur_score": prep_eval["blur_score"],
                     "preprocessed_quality_status": prep_eval["quality_status"],
+                    "retake_guidance": original_eval.get("retake_guidance", []),
                     "quality_notes": f"{original_eval['quality_notes']} | CLAHE contrast enhancement & denoising applied."
                 }
 

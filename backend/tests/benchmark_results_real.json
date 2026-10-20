@@ -1,15 +1,56 @@
 {
+  "benchmark_version": "2.0.0",
+  "run_timestamp": "2026-10-20T03:02:06.714221Z",
+  "git_commit": "b580fb7449c314b9bffae29c8b48ce2ab0e2293d",
   "dataset_classification": "SYNTHETIC_CONTROLLED",
-  "dataset_directory": "C:\\Users\\ppran\\OneDrive\\Desktop\\MetriCheck\\datasets\\real_package_validation",
+  "dataset_directory": "C:\\Users\\ppran\\OneDrive\\Desktop\\projects\\dept_hack\\MetriCheck\\datasets\\real_package_validation",
   "total_products": 12,
   "total_images": 20,
+  "manifest_validation": {
+    "manifest_path": "C:\\Users\\ppran\\OneDrive\\Desktop\\projects\\dept_hack\\MetriCheck\\datasets\\real_package_validation\\metadata\\dataset_manifest.json",
+    "manifest_version": "2.0.0",
+    "total_catalog_products": 22,
+    "missing_images_count": 28,
+    "missing_images": [
+      "real_prod_01_atta_pouch:real_prod_01_front.jpg",
+      "real_prod_01_atta_pouch:real_prod_01_back.jpg",
+      "real_prod_01_atta_pouch:real_prod_01_side.jpg",
+      "real_prod_02_tea_carton:real_prod_02_front.jpg",
+      "real_prod_02_tea_carton:real_prod_02_back.jpg",
+      "real_prod_02_tea_carton:real_prod_02_top.jpg",
+      "real_prod_03_oil_bottle:real_prod_03_front.jpg",
+      "real_prod_03_oil_bottle:real_prod_03_back.jpg",
+      "real_prod_03_oil_bottle:real_prod_03_close_up.jpg",
+      "real_prod_04_shampoo_bottle:real_prod_04_front.jpg"
+    ],
+    "duplicate_images_count": 0,
+    "duplicate_images": [],
+    "unlabelled_images_count": 0,
+    "unlabelled_images": [],
+    "invalid_roles_count": 0,
+    "invalid_roles": [],
+    "invalid_presence_count": 0,
+    "invalid_presence_statuses": [],
+    "invalid_bounding_boxes_count": 0,
+    "invalid_bounding_boxes": [],
+    "provenance_warnings_count": 0,
+    "provenance_warnings": [],
+    "product_splits": {
+      "benchmark": 12,
+      "test": 7,
+      "val": 3
+    },
+    "split_leakage_errors": [],
+    "split_integrity_verified": true,
+    "is_valid": true
+  },
   "synthetic_controlled": {
     "products_count": 12,
     "images_count": 20,
     "field_metrics": {
       "PRODUCT_NAME": {
-        "correct": 9,
-        "incorrect": 2,
+        "correct": 11,
+        "incorrect": 0,
         "not_found": 1,
         "unable_to_verify": 0,
         "ambiguous": 0,
@@ -122,6 +163,233 @@
       "LOW_CONFIDENCE": 0,
       "AMBIGUOUS": 1,
       "UNABLE_TO_VERIFY": 0,
+      "REVIEW_REQUIRED": 4
+    },
+    "category_metrics": {
+      "Food & Grocery": {
+        "total_fields": 12,
+        "correct": 8,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Cosmetics & Personal Care": {
+        "total_fields": 12,
+        "correct": 8,
+        "not_found": 1,
+        "unverifiable": 0
+      },
+      "Beverages": {
+        "total_fields": 12,
+        "correct": 8,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Confectionery & Bakery": {
+        "total_fields": 12,
+        "correct": 8,
+        "not_found": 1,
+        "unverifiable": 0
+      },
+      "Tea & Coffee": {
+        "total_fields": 12,
+        "correct": 0,
+        "not_found": 3,
+        "unverifiable": 0
+      },
+      "Staples & Flour": {
+        "total_fields": 12,
+        "correct": 5,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Dry Fruits & Nuts": {
+        "total_fields": 12,
+        "correct": 2,
+        "not_found": 1,
+        "unverifiable": 0
+      },
+      "Breakfast Cereals": {
+        "total_fields": 12,
+        "correct": 3,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Health Foods": {
+        "total_fields": 12,
+        "correct": 3,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Ayurveda & Health": {
+        "total_fields": 12,
+        "correct": 5,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Coffee": {
+        "total_fields": 12,
+        "correct": 7,
+        "not_found": 1,
+        "unverifiable": 0
+      },
+      "Snacks & Namkeen": {
+        "total_fields": 12,
+        "correct": 2,
+        "not_found": 0,
+        "unverifiable": 1
+      }
+    },
+    "package_type_metrics": {
+      "Plastic Pouch": {
+        "total_fields": 36,
+        "correct": 10,
+        "not_found": 3,
+        "unverifiable": 1
+      },
+      "Cardboard Carton": {
+        "total_fields": 12,
+        "correct": 8,
+        "not_found": 1,
+        "unverifiable": 0
+      },
+      "Plastic PET Bottle": {
+        "total_fields": 12,
+        "correct": 8,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Metallic Tin": {
+        "total_fields": 12,
+        "correct": 8,
+        "not_found": 1,
+        "unverifiable": 0
+      },
+      "Paper / Poly Bag": {
+        "total_fields": 12,
+        "correct": 5,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Glossy Pouch": {
+        "total_fields": 12,
+        "correct": 2,
+        "not_found": 1,
+        "unverifiable": 0
+      },
+      "Carton Box": {
+        "total_fields": 12,
+        "correct": 3,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Cardboard Box": {
+        "total_fields": 12,
+        "correct": 3,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Glass Bottle Carton": {
+        "total_fields": 12,
+        "correct": 5,
+        "not_found": 0,
+        "unverifiable": 0
+      },
+      "Vacuum Foil Pouch": {
+        "total_fields": 12,
+        "correct": 7,
+        "not_found": 1,
+        "unverifiable": 0
+      }
+    },
+    "role_metrics": {
+      "front": {
+        "images_evaluated": 12,
+        "boxes_detected": 51
+      },
+      "back": {
+        "images_evaluated": 6,
+        "boxes_detected": 35
+      },
+      "side": {
+        "images_evaluated": 2,
+        "boxes_detected": 7
+      }
+    },
+    "confidence_calibration": {
+      "bins": [
+        {
+          "bin_label": "[0.00 - 0.50)",
+          "bin_range": [
+            0.0,
+            0.5
+          ],
+          "sample_count": 7,
+          "average_confidence": 0.0,
+          "empirical_accuracy": 0.0,
+          "accuracy_percentage": 0.0,
+          "calibration_gap": 0.0,
+          "is_statistically_small": false
+        },
+        {
+          "bin_label": "[0.50 - 0.70)",
+          "bin_range": [
+            0.5,
+            0.7
+          ],
+          "sample_count": 0,
+          "average_confidence": 0.6,
+          "empirical_accuracy": null,
+          "accuracy_percentage": null,
+          "calibration_gap": 0.0,
+          "is_statistically_small": true
+        },
+        {
+          "bin_label": "[0.70 - 0.85)",
+          "bin_range": [
+            0.7,
+            0.85
+          ],
+          "sample_count": 0,
+          "average_confidence": 0.775,
+          "empirical_accuracy": null,
+          "accuracy_percentage": null,
+          "calibration_gap": 0.0,
+          "is_statistically_small": true
+        },
+        {
+          "bin_label": "[0.85 - 0.95)",
+          "bin_range": [
+            0.85,
+            0.95
+          ],
+          "sample_count": 11,
+          "average_confidence": 0.8994,
+          "empirical_accuracy": 1.0,
+          "accuracy_percentage": 100.0,
+          "calibration_gap": 0.1006,
+          "is_statistically_small": false
+        },
+        {
+          "bin_label": "[0.95 - 1.00]",
+          "bin_range": [
+            0.95,
+            1.0001
+          ],
+          "sample_count": 49,
+          "average_confidence": 0.9998,
+          "empirical_accuracy": 0.9796,
+          "accuracy_percentage": 98.0,
+          "calibration_gap": 0.0202,
+          "is_statistically_small": false
+        }
+      ],
+      "expected_calibration_error": 0.0313,
+      "total_samples": 67,
+      "status": "CALIBRATED"
+    },
+    "compliance_outcomes": {
+      "COMPLIANT": 0,
+      "NON_COMPLIANT": 8,
       "REVIEW_REQUIRED": 4
     }
   },
@@ -246,7 +514,21 @@
       "UNABLE_TO_VERIFY": 0,
       "REVIEW_REQUIRED": 0
     },
-    "status_note": "NOT EXECUTED \u2014 no genuine real-photo dataset supplied"
+    "category_metrics": {},
+    "package_type_metrics": {},
+    "role_metrics": {},
+    "confidence_calibration": {
+      "bins": [],
+      "expected_calibration_error": 0.0,
+      "total_samples": 0,
+      "status": "INSUFFICIENT_DATA"
+    },
+    "compliance_outcomes": {
+      "COMPLIANT": 0,
+      "NON_COMPLIANT": 0,
+      "REVIEW_REQUIRED": 0
+    },
+    "status_note": "NOT EXECUTED \u2014 no genuine verified physical photographs supplied"
   },
   "ocr_confidence": {
     "mean": 0.9929,
@@ -261,39 +543,39 @@
   },
   "latency": {
     "image_loading_ms": {
-      "mean": 0.09,
-      "p50": 0.08,
-      "p95": 0.11,
-      "min": 0.08,
-      "max": 0.11
+      "mean": 0.11,
+      "p50": 0.1,
+      "p95": 0.32,
+      "min": 0.09,
+      "max": 0.32
     },
     "image_decoding_ms": {
-      "mean": 1.17,
-      "p50": 1.12,
-      "p95": 2.79,
-      "min": 0.7,
-      "max": 2.79
+      "mean": 1.24,
+      "p50": 1.08,
+      "p95": 4.64,
+      "min": 0.73,
+      "max": 4.64
     },
     "preprocessing_ms": {
-      "mean": 7.46,
-      "p50": 3.5,
-      "p95": 83.14,
-      "min": 2.53,
-      "max": 83.14
+      "mean": 10.48,
+      "p50": 8.57,
+      "p95": 49.78,
+      "min": 4.93,
+      "max": 49.78
     },
     "ocr_initialization_ms": {
       "mean": 0.01,
       "p50": 0.01,
-      "p95": 0.02,
+      "p95": 0.03,
       "min": 0.0,
-      "max": 0.02
+      "max": 0.03
     },
     "ocr_inference_ms": {
-      "mean": 3504.62,
-      "p50": 2872.31,
-      "p95": 6676.03,
-      "min": 1165.31,
-      "max": 6676.03
+      "mean": 3402.47,
+      "p50": 2893.31,
+      "p95": 6161.48,
+      "min": 1122.39,
+      "max": 6161.48
     },
     "ocr_postprocessing_ms": {
       "mean": 2.5,
@@ -303,50 +585,50 @@
       "max": 2.5
     },
     "retry_ms": {
-      "mean": 68.8,
+      "mean": 67.26,
       "p50": 0.0,
-      "p95": 1376.05,
+      "p95": 1345.23,
       "min": 0.0,
-      "max": 1376.05
+      "max": 1345.23
     },
     "extraction_ms": {
-      "mean": 0.44,
-      "p50": 0.23,
-      "p95": 3.31,
-      "min": 0.07,
-      "max": 3.31
+      "mean": 2.3,
+      "p50": 0.37,
+      "p95": 36.43,
+      "min": 0.09,
+      "max": 36.43
     },
     "aggregation_ms": {
-      "mean": 0.18,
-      "p50": 0.16,
-      "p95": 0.31,
-      "min": 0.06,
-      "max": 0.31
+      "mean": 0.46,
+      "p50": 0.46,
+      "p95": 0.78,
+      "min": 0.07,
+      "max": 0.78
     },
     "compliance_ms": {
-      "mean": 0.14,
-      "p50": 0.12,
-      "p95": 0.47,
-      "min": 0.1,
-      "max": 0.47
+      "mean": 0.16,
+      "p50": 0.14,
+      "p95": 0.44,
+      "min": 0.12,
+      "max": 0.44
     },
     "persistence_ms": {
-      "mean": 0.19,
-      "p50": 0.18,
-      "p95": 0.33,
-      "min": 0.16,
-      "max": 0.33
+      "mean": 0.26,
+      "p50": 0.25,
+      "p95": 0.34,
+      "min": 0.21,
+      "max": 0.34
     },
     "total_ms": {
-      "mean": 3585.59,
-      "p50": 2879.11,
-      "p95": 6685.41,
-      "min": 2012.92,
-      "max": 6685.41
+      "mean": 3487.26,
+      "p50": 2904.44,
+      "p95": 6177.24,
+      "min": 1965.68,
+      "max": 6177.24
     },
-    "ocr_cold_start_ms": 3475.58,
-    "ocr_warm_inference_ms": 3506.29,
-    "ocr_average_inference_ms": 3504.62
+    "ocr_cold_start_ms": 3008.32,
+    "ocr_warm_inference_ms": 3423.35,
+    "ocr_average_inference_ms": 3402.47
   },
   "failure_cases": [
     {
@@ -366,25 +648,6 @@
       "confidence": 0.0,
       "failure_category": "OCR_FAILURE",
       "likely_failure_point": "Declaration was present in ground truth but not detected by OCR/extractor.",
-      "severity": "WARNING"
-    },
-    {
-      "dataset_type": "SYNTHETIC_CONTROLLED",
-      "product": "prod_03_bottle",
-      "image": "['prod_03_bottle_front.png', 'prod_03_bottle_back.png']",
-      "field": "PRODUCT_NAME",
-      "ground_truth": "MANGO DELIGHT PULP",
-      "system_output": "100% Fruit Juice Beverage",
-      "expected_status": "FOUND",
-      "actual_status": "FOUND",
-      "ocr_text": [
-        "MANGO DELIGHT PULP",
-        "100% Fruit Juice Beverage",
-        "Net Quantity: 1 L"
-      ],
-      "confidence": 0.8499,
-      "failure_category": "EXTRACTION_FAILURE",
-      "likely_failure_point": "Value mismatch: expected 'MANGO DELIGHT PULP', extracted '100% Fruit Juice Beverage'.",
       "severity": "WARNING"
     },
     {
@@ -469,25 +732,6 @@
       "failure_category": "OCR_FAILURE",
       "likely_failure_point": "Declaration was present in ground truth but not detected by OCR/extractor.",
       "severity": "ERROR"
-    },
-    {
-      "dataset_type": "SYNTHETIC_CONTROLLED",
-      "product": "prod_08_price_distractors",
-      "image": "['prod_08_price_distractors.png']",
-      "field": "PRODUCT_NAME",
-      "ground_truth": "CRUNCHY OAT CEREAL",
-      "system_output": "Cashback Offer: Up to \u20b9100 inside wrapper",
-      "expected_status": "FOUND",
-      "actual_status": "FOUND",
-      "ocr_text": [
-        "CRUNCHY OAT CEREAL",
-        "SUPER SAVER OFFER! SAVE \u20b950 ON NEXT PACK",
-        "Cashback Offer: Up to \u20b9100 inside wrapper"
-      ],
-      "confidence": 0.8455,
-      "failure_category": "EXTRACTION_FAILURE",
-      "likely_failure_point": "Value mismatch: expected 'CRUNCHY OAT CEREAL', extracted 'Cashback Offer: Up to \u20b9100 inside wrapper'.",
-      "severity": "WARNING"
     },
     {
       "dataset_type": "SYNTHETIC_CONTROLLED",

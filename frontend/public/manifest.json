@@ -1,0 +1,19 @@
+{
+  "name": "MetriCheck — Legal Metrology Compliance Scanner",
+  "short_name": "MetriCheck",
+  "description": "Mobile Field Inspection and Legal Metrology Rule 6 Verification Scanner",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#1d4ed8",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["business", "productivity", "utilities"]
+}

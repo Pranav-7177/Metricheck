@@ -106,14 +106,24 @@ class PretrainedOCREngine(BaseOCREngine):
         attempt_1_res.preprocessed_used = False
 
         # Determine if retry on preprocessed image is warranted
-        needs_retry = (
-            force_preprocess or
-            attempt_1_res.total_detections == 0 or
-            attempt_1_res.average_confidence < threshold
-        )
+        needs_retry = False
+        retry_reason = None
+        if force_preprocess:
+            needs_retry = True
+            retry_reason = "FORCED_PREPROCESS"
+        elif attempt_1_res.status == "FAILED":
+            needs_retry = True
+            retry_reason = "INITIAL_OCR_FAILED"
+        elif attempt_1_res.total_detections == 0:
+            needs_retry = True
+            retry_reason = "NO_TEXT_DETECTED_ON_ORIGINAL"
+        elif attempt_1_res.average_confidence < threshold:
+            needs_retry = True
+            retry_reason = f"LOW_AVERAGE_CONFIDENCE_{attempt_1_res.average_confidence:.2f}_BELOW_{threshold:.2f}"
 
         if not needs_retry or not retry_after_preprocess or max_tries < 2:
             attempt_1_res.processing_time_ms = round((time.time() - start_time) * 1000.0, 2)
+            attempt_1_res.retry_reason = None
             return attempt_1_res
 
         # Attempt 2: Prepare and run on preprocessed image
@@ -132,6 +142,7 @@ class PretrainedOCREngine(BaseOCREngine):
         if not prep_ok or not os.path.exists(target_prep_path):
             # Preprocessing failed or could not be generated; return attempt 1
             attempt_1_res.processing_time_ms = round((time.time() - start_time) * 1000.0, 2)
+            attempt_1_res.retry_reason = f"{retry_reason}_PREPROCESSING_FAILED"
             return attempt_1_res
 
         # Run Attempt 2
@@ -143,6 +154,7 @@ class PretrainedOCREngine(BaseOCREngine):
         )
         attempt_2_res.attempt_count = 2
         attempt_2_res.preprocessed_used = True
+        attempt_2_res.retry_reason = retry_reason
 
         # Check if optional cloud fallback is enabled and justified
         if (
@@ -158,6 +170,7 @@ class PretrainedOCREngine(BaseOCREngine):
             )
             if fallback_res.total_detections > 0:
                 fallback_res.attempt_count = 3
+                fallback_res.retry_reason = "FALLBACK_CLOUD_OCR"
                 fallback_res.processing_time_ms = round((time.time() - start_time) * 1000.0, 2)
                 return fallback_res
 
@@ -175,6 +188,7 @@ class PretrainedOCREngine(BaseOCREngine):
             best_res = attempt_1_res
 
         best_res.attempt_count = total_attempts
+        best_res.retry_reason = retry_reason
         best_res.processing_time_ms = round((time.time() - start_time) * 1000.0, 2)
         return best_res
 

@@ -5,10 +5,11 @@ import NewScanPage from './pages/NewScanPage';
 import AnalysisPage from './pages/AnalysisPage';
 import ResultsPage from './pages/ResultsPage';
 import RulesExplorerPage from './pages/RulesExplorerPage';
-import { ShieldAlert, Info } from 'lucide-react';
+import MobileInspectionMode from './components/MobileInspectionMode';
+import { Info } from 'lucide-react';
 
 export default function App() {
-  const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, new_scan, analysis, results, rules
+  const [activeTab, setActiveTab] = useState("dashboard"); // dashboard, new_scan, analysis, results, rules, mobile
   const [stats, setStats] = useState(null);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,6 +93,22 @@ export default function App() {
             onRefresh={fetchInitialData}
             onViewScan={handleViewScan}
             onStartNewScan={() => setActiveTab("new_scan")}
+            onStartMobileInspection={() => setActiveTab("mobile")}
+          />
+        )}
+
+        {activeTab === "mobile" && (
+          <MobileInspectionMode
+            categories={categories}
+            initialScan={currentScan}
+            onScanComplete={(scanResult) => {
+              setCurrentScan(scanResult);
+              fetchInitialData();
+            }}
+            onExitMobileMode={() => {
+              fetchInitialData();
+              setActiveTab("dashboard");
+            }}
           />
         )}
 

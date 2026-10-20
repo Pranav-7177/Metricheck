@@ -50,15 +50,18 @@ class ComplianceRuleEngine:
         }
 
         # Case 1: Declaration was not found at all
-        if not decl or decl.get("status") == ComplianceState.NOT_FOUND:
+        status_val = decl.get("status") if decl else None
+        ext_status_val = decl.get("extraction_status") if decl else None
+
+        if not decl or status_val in (ComplianceState.NOT_FOUND, "NOT_FOUND") or ext_status_val == "NOT_FOUND":
             if rule.is_mandatory:
                 return {
                     **rule_info,
                     "detected_value": "NOT DETECTED",
                     "status": ComplianceState.NOT_FOUND,
                     "confidence": 0.85,
-                    "reason": f"Mandatory declaration '{rule.field_target.upper()}' was not detected in any uploaded packaging photographs.",
-                    "suggested_action": f"Verify if '{rule.field_target}' is printed on another side of the packaging or request an unoccluded photograph."
+                    "reason": "No sufficiently reliable evidence for this declaration was detected in the submitted images.",
+                    "suggested_action": "Capture the package panel where this declaration is expected."
                 }
             else:
                 return {
@@ -70,18 +73,40 @@ class ComplianceRuleEngine:
                     "suggested_action": "No action required."
                 }
 
-        # Case 2: Declaration was unreadable / low OCR confidence
-        if decl.get("status") == ComplianceState.UNABLE_TO_VERIFY:
+        # Case 2: Declaration was unreadable / unable to verify
+        if status_val in (ComplianceState.UNABLE_TO_VERIFY, "UNABLE_TO_VERIFY") or ext_status_val == "UNABLE_TO_VERIFY":
+            return {
+                **rule_info,
+                "detected_value": decl.get("detected_value") or "Unreadable text",
+                "status": ComplianceState.UNABLE_TO_VERIFY,
+                "confidence": decl.get("confidence", 0.0),
+                "reason": "Relevant evidence appears to be present, but the declaration could not be reliably read or verified.",
+                "suggested_action": "Capture a clearer close-up image of the declaration."
+            }
+
+        # Case 3: Conflicting or ambiguous candidates
+        if decl.get("has_conflict") or ext_status_val == "AMBIGUOUS" or status_val in (ComplianceState.REVIEW_REQUIRED, "AMBIGUOUS"):
+            return {
+                **rule_info,
+                "detected_value": decl.get("detected_value") or "Ambiguous values",
+                "status": ComplianceState.REVIEW_REQUIRED,
+                "confidence": decl.get("confidence", 0.5),
+                "reason": "Multiple conflicting or plausible values were detected. Manual review is required.",
+                "suggested_action": "Review the conflicting values across the submitted images."
+            }
+
+        # Case 4: Low OCR confidence below threshold
+        if ext_status_val == "LOW_CONFIDENCE":
             return {
                 **rule_info,
                 "detected_value": decl.get("detected_value") or "Low confidence text",
                 "status": ComplianceState.UNABLE_TO_VERIFY,
                 "confidence": decl.get("confidence", 0.4),
-                "reason": f"Text detected in the '{rule.field_target}' region was obscured, blurry, or low-contrast (confidence {decl.get('confidence', 0.4)*100:.0f}%).",
-                "suggested_action": "Capture a clearer, glare-free, well-lit close-up photograph of this specific declaration panel."
+                "reason": "A candidate was detected, but confidence is below the configured verification threshold.",
+                "suggested_action": "Submit a higher-resolution image with better lighting and reduced glare."
             }
 
-        detected_val = decl.get("detected_value", "")
+        detected_val = str(decl.get("detected_value") or "")
         conf = decl.get("confidence", 0.9)
 
         # Case 3: Specific legal validations

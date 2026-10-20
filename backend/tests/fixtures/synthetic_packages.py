@@ -41,8 +41,8 @@ def render_package_label(
     small_text: bool = False,
 ) -> Image.Image:
     """Renders a clean, realistic statutory packaging label on a simulated cardboard/pouch background."""
-    # Background: off-white packaging material
-    img = Image.new("RGB", (width, height), color=(248, 247, 242))
+    # Background: simulated natural packaging material
+    img = Image.new("RGB", (width, height), color=(238, 235, 228))
     draw = ImageDraw.Draw(img)
 
     # Decorative packaging borders
@@ -61,7 +61,7 @@ def render_package_label(
     # Statutory information box
     box_top = 170
     box_bottom = height - 40
-    draw.rectangle([(45, box_top), (width - 45, box_bottom)], fill=(255, 255, 255), outline=(180, 180, 180), width=1)
+    draw.rectangle([(45, box_top), (width - 45, box_bottom)], fill=(242, 240, 235), outline=(180, 180, 180), width=1)
     
     # Subheader for mandatory declarations
     decl_header_font = _get_font(18 if not small_text else 14)
@@ -139,9 +139,10 @@ def render_package_label(
 # Perturbation Functions
 # ---------------------------------------------------------------------------
 
-def apply_blur(image: Image.Image, sigma: float) -> Image.Image:
-    """Applies Gaussian blur with given radius sigma."""
-    return image.filter(ImageFilter.GaussianBlur(radius=sigma))
+def apply_blur(image: Image.Image, sigma: float = 2.0, radius: Optional[float] = None) -> Image.Image:
+    """Applies Gaussian blur with given radius or sigma."""
+    r = radius if radius is not None else sigma
+    return image.filter(ImageFilter.GaussianBlur(radius=r))
 
 
 def apply_glare(

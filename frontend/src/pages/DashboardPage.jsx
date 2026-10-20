@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { 
   ShieldCheck, AlertTriangle, HelpCircle, CheckCircle2, 
-  ArrowRight, Search, Filter, RefreshCw, Calendar, Tag
+  ArrowRight, Search, Filter, RefreshCw, Calendar, Tag, Smartphone
 } from 'lucide-react';
 import StatusBadge from '../components/StatusBadge';
 
-export default function DashboardPage({ stats, loading, onRefresh, onViewScan, onStartNewScan }) {
+export default function DashboardPage({ stats, loading, onRefresh, onViewScan, onStartNewScan, onStartMobileInspection }) {
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -45,13 +45,25 @@ export default function DashboardPage({ stats, loading, onRefresh, onViewScan, o
             </p>
           </div>
 
-          <button
-            onClick={onStartNewScan}
-            className="self-start md:self-center px-5 py-3 rounded-xl bg-white text-blue-900 hover:bg-blue-50 font-semibold text-sm shadow-md transition-all flex items-center gap-2 shrink-0 cursor-pointer"
-          >
-            <span>Scan New Packaging</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
+          <div className="flex flex-wrap items-center gap-2.5 self-start md:self-center shrink-0">
+            <button
+              onClick={onStartNewScan}
+              className="px-4 py-2.5 rounded-xl bg-white text-blue-900 hover:bg-blue-50 font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Scan Packaging</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            {onStartMobileInspection && (
+              <button
+                onClick={onStartMobileInspection}
+                className="px-4 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs sm:text-sm shadow-md transition-all flex items-center gap-1.5 cursor-pointer"
+              >
+                <Smartphone className="w-4 h-4" />
+                <span>Mobile Edge</span>
+              </button>
+            )}
+          </div>
         </div>
       </div>
 

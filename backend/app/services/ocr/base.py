@@ -55,6 +55,7 @@ class OCRResult(BaseModel):
     processing_time_ms: float = 0.0
     attempt_count: int = 1
     preprocessed_used: bool = False
+    retry_reason: Optional[str] = None
     status: str = "COMPLETED"  # COMPLETED, NO_TEXT_DETECTED, FAILED
     error_message: Optional[str] = None
 

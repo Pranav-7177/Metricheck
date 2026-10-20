@@ -16,6 +16,14 @@ def migrate_database():
             ("preprocessed_file_path", "VARCHAR(500)"),
             ("quality_score", "FLOAT DEFAULT 1.0"),
             ("preprocessing_status", "VARCHAR(50) DEFAULT 'NOT_REQUIRED'"),
+            ("quality_decision", "VARCHAR(30) DEFAULT 'ACCEPTABLE'"),
+            ("retake_guidance", "TEXT"),
+            ("content_hash", "VARCHAR(64)"),
+            ("perceptual_hash", "VARCHAR(64)"),
+            ("is_duplicate", "BOOLEAN DEFAULT 0"),
+            ("duplicate_of_id", "INTEGER"),
+            ("duplicate_type", "VARCHAR(30)"),
+            ("duplicate_reason", "TEXT"),
             ("ocr_status", "VARCHAR(50) DEFAULT 'PENDING'"),
             ("ocr_engine_used", "VARCHAR(50)"),
             ("ocr_confidence", "FLOAT DEFAULT 0.0"),
@@ -27,6 +35,17 @@ def migrate_database():
             for col, col_type in cols_to_add:
                 if col not in existing:
                     conn.execute(text(f"ALTER TABLE scan_images ADD COLUMN {col} {col_type}"))
+
+    if "scans" in insp.get_table_names():
+        existing_scans = {c["name"] for c in insp.get_columns("scans")}
+        scan_cols_to_add = [
+            ("scan_reliability", "TEXT"),
+            ("coverage_summary", "TEXT"),
+        ]
+        with engine.begin() as conn:
+            for col, col_type in scan_cols_to_add:
+                if col not in existing_scans:
+                    conn.execute(text(f"ALTER TABLE scans ADD COLUMN {col} {col_type}"))
 
     if "extracted_declarations" in insp.get_table_names():
         existing_decl = {c["name"] for c in insp.get_columns("extracted_declarations")}

@@ -74,6 +74,22 @@ class ImageQualityResponse(BaseModel):
     preprocessed_file_path: Optional[str] = None
     quality_notes: Optional[str] = None
 
+class ImageQualityPreviewResponse(BaseModel):
+    quality_status: ImageQualityStatus
+    quality_decision: str = "ACCEPTABLE"
+    quality_score: float = 1.0
+    blur_score: float
+    glare_score: float
+    glare_percentage: float = 0.0
+    lighting_score: float
+    brightness_score: float = 1.0
+    resolution_w: int
+    resolution_h: int
+    resolution_ok: bool = True
+    perspective_skew: bool = False
+    quality_notes: str
+    retake_guidance: List[str] = []
+
 class ScanQualityCheckResponse(BaseModel):
     scan_id: int
     overall_quality_status: ImageQualityStatus
@@ -102,6 +118,14 @@ class ScanImageResponse(BaseModel):
     resolution_h: int
     quality_notes: Optional[str] = None
     preprocessing_status: Optional[str] = "NOT_REQUIRED"
+    quality_decision: Optional[str] = "ACCEPTABLE"
+    retake_guidance: Optional[List[str]] = None
+    content_hash: Optional[str] = None
+    perceptual_hash: Optional[str] = None
+    is_duplicate: Optional[bool] = False
+    duplicate_of_id: Optional[int] = None
+    duplicate_type: Optional[str] = None
+    duplicate_reason: Optional[str] = None
     ocr_status: Optional[str] = "PENDING"
     ocr_engine_used: Optional[str] = None
     ocr_confidence: Optional[float] = 0.0
@@ -121,7 +145,7 @@ class ExtractedFieldResponse(BaseModel):
     unit: Optional[str] = None
     confidence: float = 0.0
     raw_ocr_confidence: float = 0.0
-    status: str = "NOT_FOUND" # FOUND, NOT_FOUND, AMBIGUOUS, LOW_CONFIDENCE
+    status: str = "NOT_FOUND" # FOUND, NOT_FOUND, AMBIGUOUS, LOW_CONFIDENCE, UNABLE_TO_VERIFY
     source_image_id: Optional[int] = None
     source_image_role: Optional[str] = "front"
     source_ocr_ids: List[int] = []
@@ -130,6 +154,10 @@ class ExtractedFieldResponse(BaseModel):
     extraction_method: str = "DETERMINISTIC_CONTEXT"
     has_conflict: bool = False
     alternate_candidates: List[Dict[str, Any]] = []
+    estimated_font_height_mm: Optional[float] = None
+    required_font_height_mm: Optional[float] = None
+    measurement_confidence: Optional[str] = "UNCALIBRATED"
+    visual_evidence: Optional[Dict[str, Any]] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -164,8 +192,10 @@ class DeclarationResponse(BaseModel):
     estimated_font_height_mm: Optional[float] = None
     required_font_height_mm: Optional[float] = None
     measurement_confidence: Optional[str] = "ESTIMATED"
+    visual_evidence: Optional[Dict[str, Any]] = None
 
     model_config = ConfigDict(from_attributes=True)
+
 
 class RuleValidationResultResponse(BaseModel):
     id: int
@@ -194,6 +224,8 @@ class ScanSummaryResponse(BaseModel):
     is_calibrated: bool = False
     is_demo: bool = False
     images_count: int = 0
+    scan_reliability: Optional[Dict[str, Any]] = None
+    coverage_summary: Optional[Dict[str, Any]] = None
 
     model_config = ConfigDict(from_attributes=True)
 
@@ -212,6 +244,8 @@ class ScanDetailResponse(BaseModel):
     pixels_per_mm: Optional[float] = None
     analysis_step: str = "COMPLETED"
     is_demo: bool = False
+    scan_reliability: Optional[Dict[str, Any]] = None
+    coverage_summary: Optional[Dict[str, Any]] = None
     
     images: List[ScanImageResponse] = []
     declarations: List[DeclarationResponse] = []

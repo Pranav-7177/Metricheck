@@ -77,13 +77,22 @@ class EvaluationNormalizer:
         field_name: str,
         ground_truth: Optional[str],
         candidate: Optional[Any],
+        gt_presence: Optional[str] = None,
     ) -> Dict[str, Any]:
         """
         Compares system output candidate against ground truth.
+        Accepts optional gt_presence from human-verified ground truth taxonomy:
+        - LEGIBLE: text is clearly readable on physical package
+        - ILLEGIBLE: text is faded/smeared/degraded on physical package
+        - OBSCURED: text is physically covered by store sticker, tape, fold, etc.
+        - ABSENT: legally required declaration is physically missing from package
+        - NOT_APPLICABLE: declaration does not legally apply to this commodity category
+
         Returns evaluation dict with:
         - evaluation_status: CORRECT, INCORRECT, NOT_FOUND, LOW_CONFIDENCE, AMBIGUOUS, UNABLE_TO_VERIFY, NOT_APPLICABLE
         - is_match: bool
         - ground_truth: str or None
+        - ground_truth_presence: str
         - detected_value: str or None
         - candidate_status: str
         """
@@ -91,18 +100,25 @@ class EvaluationNormalizer:
         cand_status = getattr(candidate, "status", "NOT_FOUND") if candidate else "NOT_FOUND"
         cand_conf = getattr(candidate, "confidence", 0.0) if candidate else 0.0
 
-        # Case 1: Ground truth declaration is genuinely absent / not applicable
-        if ground_truth is None or str(ground_truth).strip().lower() in ("null", "none", ""):
+        # Infer presence state if not explicitly supplied
+        effective_presence = (gt_presence.upper() if gt_presence else None) or (
+            "LEGIBLE" if ground_truth is not None and str(ground_truth).strip().lower() not in ("null", "none", "")
+            else "NOT_APPLICABLE"
+        )
+
+        # Case 1: Ground truth presence is NOT_APPLICABLE (commodity exempt / field does not apply)
+        if effective_presence == "NOT_APPLICABLE":
             if cand_status == "NOT_FOUND" or not cand_val:
                 return {
                     "field_name": field_name,
                     "evaluation_status": "NOT_APPLICABLE",
                     "is_match": True,
                     "ground_truth": None,
+                    "ground_truth_presence": "NOT_APPLICABLE",
                     "detected_value": None,
                     "candidate_status": cand_status,
                     "confidence": cand_conf,
-                    "reason": "Declaration genuinely absent on package and correctly not detected."
+                    "reason": "Declaration legally not applicable for this commodity and correctly not detected."
                 }
             else:
                 return {
@@ -110,23 +126,91 @@ class EvaluationNormalizer:
                     "evaluation_status": "INCORRECT",
                     "is_match": False,
                     "ground_truth": None,
+                    "ground_truth_presence": "NOT_APPLICABLE",
                     "detected_value": cand_val,
                     "candidate_status": cand_status,
                     "confidence": cand_conf,
-                    "reason": f"False positive: field was extracted ({cand_val}) but genuinely does not exist on product."
+                    "reason": f"False positive: field was extracted ({cand_val}) but is NOT_APPLICABLE for this commodity."
                 }
 
-        # Case 2: Ground truth exists, check candidate uncertainty states
+        # Case 2: Ground truth presence is ABSENT (physically omitted by manufacturer)
+        if effective_presence == "ABSENT":
+            if cand_status == "NOT_FOUND" or not cand_val:
+                return {
+                    "field_name": field_name,
+                    "evaluation_status": "CORRECT",
+                    "is_match": True,
+                    "ground_truth": None,
+                    "ground_truth_presence": "ABSENT",
+                    "detected_value": None,
+                    "candidate_status": cand_status,
+                    "confidence": cand_conf,
+                    "reason": "Declaration physically absent on package and correctly identified as not found."
+                }
+            else:
+                return {
+                    "field_name": field_name,
+                    "evaluation_status": "INCORRECT",
+                    "is_match": False,
+                    "ground_truth": None,
+                    "ground_truth_presence": "ABSENT",
+                    "detected_value": cand_val,
+                    "candidate_status": cand_status,
+                    "confidence": cand_conf,
+                    "reason": f"False positive: field was extracted ({cand_val}) but is physically ABSENT on package."
+                }
+
+        # Case 3: Ground truth presence is ILLEGIBLE or OBSCURED (physical package defect/occlusion)
+        if effective_presence in ("ILLEGIBLE", "OBSCURED"):
+            if cand_status in ("UNABLE_TO_VERIFY", "LOW_CONFIDENCE", "NOT_FOUND"):
+                return {
+                    "field_name": field_name,
+                    "evaluation_status": "UNABLE_TO_VERIFY",
+                    "is_match": True,
+                    "ground_truth": ground_truth,
+                    "ground_truth_presence": effective_presence,
+                    "detected_value": cand_val,
+                    "candidate_status": cand_status,
+                    "confidence": cand_conf,
+                    "reason": f"Physical packaging is {effective_presence}; pipeline correctly indicated optical uncertainty ({cand_status})."
+                }
+            elif cand_val and ground_truth and str(ground_truth).strip().lower() in str(cand_val).strip().lower():
+                return {
+                    "field_name": field_name,
+                    "evaluation_status": "CORRECT",
+                    "is_match": True,
+                    "ground_truth": ground_truth,
+                    "ground_truth_presence": effective_presence,
+                    "detected_value": cand_val,
+                    "candidate_status": cand_status,
+                    "confidence": cand_conf,
+                    "reason": f"Declaration was read correctly despite packaging being {effective_presence}."
+                }
+            else:
+                return {
+                    "field_name": field_name,
+                    "evaluation_status": "INCORRECT",
+                    "is_match": False,
+                    "ground_truth": ground_truth,
+                    "ground_truth_presence": effective_presence,
+                    "detected_value": cand_val,
+                    "candidate_status": cand_status,
+                    "confidence": cand_conf,
+                    "reason": f"Erroneous extraction on {effective_presence} package: detected '{cand_val}'."
+                }
+
+        # Case 4: Ground truth exists and is LEGIBLE on package. Check candidate uncertainty states
         if cand_status == "UNABLE_TO_VERIFY":
             return {
                 "field_name": field_name,
                 "evaluation_status": "UNABLE_TO_VERIFY",
                 "is_match": False,
                 "ground_truth": ground_truth,
+                "ground_truth_presence": "LEGIBLE",
                 "detected_value": cand_val,
                 "candidate_status": cand_status,
                 "confidence": cand_conf,
-                "reason": "Image quality or evidence was insufficient to verify declaration reliably."
+                "reason": "Image quality or optical evidence was insufficient to verify declaration reliably."
             }
 
         if cand_status == "LOW_CONFIDENCE":
@@ -135,6 +219,7 @@ class EvaluationNormalizer:
                 "evaluation_status": "LOW_CONFIDENCE",
                 "is_match": False,
                 "ground_truth": ground_truth,
+                "ground_truth_presence": "LEGIBLE",
                 "detected_value": cand_val,
                 "candidate_status": cand_status,
                 "confidence": cand_conf,
@@ -147,6 +232,7 @@ class EvaluationNormalizer:
                 "evaluation_status": "AMBIGUOUS",
                 "is_match": False,
                 "ground_truth": ground_truth,
+                "ground_truth_presence": "LEGIBLE",
                 "detected_value": cand_val,
                 "candidate_status": cand_status,
                 "confidence": cand_conf,
@@ -159,6 +245,7 @@ class EvaluationNormalizer:
                 "evaluation_status": "NOT_FOUND",
                 "is_match": False,
                 "ground_truth": ground_truth,
+                "ground_truth_presence": "LEGIBLE",
                 "detected_value": None,
                 "candidate_status": cand_status,
                 "confidence": cand_conf,
@@ -208,6 +295,7 @@ class EvaluationNormalizer:
             "evaluation_status": eval_status,
             "is_match": is_match,
             "ground_truth": ground_truth,
+            "ground_truth_presence": "LEGIBLE",
             "detected_value": cand_val,
             "candidate_status": cand_status,
             "confidence": cand_conf,

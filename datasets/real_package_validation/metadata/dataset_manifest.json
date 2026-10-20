@@ -1,7 +1,13 @@
 {
-  "manifest_version": "1.0.0",
-  "framework": "MetriCheck Real Package Validation Framework",
-  "statutory_rules": "Legal Metrology (Packaged Commodities) Rules, 2011",
+  "manifest_version": "2.0.0",
+  "framework": "MetriCheck Real Package Validation Benchmark Framework",
+  "statutory_rules": "Legal Metrology (Packaged Commodities) Rules, 2011 (as amended 2024)",
+  "dataset_title": "Curated Indian Physical Retail Packaged Commodities Benchmark (25-50 Target)",
+  "dataset_types": [
+    "REAL_PHOTO",
+    "SYNTHETIC_CONTROLLED",
+    "MIXED"
+  ],
   "supported_fields": [
     "PRODUCT_NAME",
     "MRP",
@@ -16,15 +22,497 @@
     "CONSUMER_CARE",
     "COUNTRY_OF_ORIGIN"
   ],
-  "dataset_types": [
-    "REAL_PHOTO",
-    "SYNTHETIC_CONTROLLED",
-    "MIXED"
+  "presence_states": [
+    "LEGIBLE",
+    "ILLEGIBLE",
+    "OBSCURED",
+    "ABSENT",
+    "NOT_APPLICABLE"
   ],
   "directories": {
     "real_images": "images/real",
     "synthetic_images": "images/synthetic",
     "real_annotations": "annotations/real",
     "synthetic_annotations": "annotations/synthetic"
-  }
+  },
+  "manifest_audit_status": {
+    "status": "PROVISIONAL_SPECIFICATION_PLAN_UNEXECUTED",
+    "target_product_quota": "50-100 physical retail commodities",
+    "target_image_quota": "150-350 multi-panel photographs",
+    "audit_verdict": "Real photo validation BLOCKED / NOT EXECUTED",
+    "discrepancies": {
+      "missing_images_count": 28,
+      "missing_images_detail": "28 declared image filenames in real_catalog_specification are not present on disk in images/real/",
+      "omitted_bounding_boxes_count": 120,
+      "omitted_bounding_boxes_detail": "All 120 ground truth declarations across 10 specification products omit bounding box coordinates in initial provisional specification",
+      "small_sample_categories": [
+        "Food & Grocery (n=4)",
+        "Cosmetics & Personal Care (n=3)",
+        "Household Products (n=3)"
+      ],
+      "small_sample_warning": "All category and package-type counts n < 5; violates minimum statistical threshold n >= 12",
+      "annotator_records": "Placeholder agreement score (1.0) declared; 0 dual-annotation files submitted on disk"
+    },
+    "discrepancy_resolution": "The discrepancies are formally documented, tracked, and quarantined. The real_catalog_specification represents a target procurement and annotation template rather than executed ground truth. In strict adherence to the refusal invariant, real-photo benchmark inference is prevented until genuine photos and human-verified dual annotations are delivered to disk."
+  },
+  "real_catalog_specification": [
+    {
+      "product_id": "real_prod_01_atta_pouch",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Food & Grocery",
+      "package_type": "Plastic Pouch",
+      "split": "test",
+      "provenance": {
+        "brand_name": "Aashirvaad Shuddh Chakki Atta",
+        "retail_category_l1": "Food & Grocery",
+        "retail_category_l2": "Flour & Staples",
+        "acquisition_state": "Delhi",
+        "acquisition_city": "New Delhi",
+        "acquisition_date": "2026-03-15",
+        "barcode_ean": "8901030383724",
+        "camera_device": "Samsung Galaxy S23",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_01_front", "file_name": "real_prod_01_front.jpg", "role": "front" },
+        { "image_id": "real_prod_01_back", "file_name": "real_prod_01_back.jpg", "role": "back" },
+        { "image_id": "real_prod_01_side", "file_name": "real_prod_01_side.jpg", "role": "side" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Aashirvaad Superior MP Whole Wheat Atta", "status": "LEGIBLE" },
+        "MRP": { "value": "₹285.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "5 kg", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "ITC Limited, 37, J.L. Nehru Road, Kolkata - 700071, West Bengal", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "02/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "BEST_BEFORE": { "value": "Best Before 3 Months from Packaging", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "ITC Cares: 1800-345-0005, itccares@itc.in, P.O. Box 542, Kolkata", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_01",
+        "annotator_2_id": "annotator_dl_02",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-03-18"
+      }
+    },
+    {
+      "product_id": "real_prod_02_tea_carton",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Food & Grocery",
+      "package_type": "Folding Carton",
+      "split": "test",
+      "provenance": {
+        "brand_name": "Tata Tea Gold",
+        "retail_category_l1": "Food & Grocery",
+        "retail_category_l2": "Beverages & Tea",
+        "acquisition_state": "Maharashtra",
+        "acquisition_city": "Mumbai",
+        "acquisition_date": "2026-03-20",
+        "barcode_ean": "8901052003884",
+        "camera_device": "iPhone 14",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_02_front", "file_name": "real_prod_02_front.jpg", "role": "front" },
+        { "image_id": "real_prod_02_back", "file_name": "real_prod_02_back.jpg", "role": "back" },
+        { "image_id": "real_prod_02_top", "file_name": "real_prod_02_top.jpg", "role": "top" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Tata Tea Gold Fine Leaves with Long Gentle Rolled Leaves", "status": "LEGIBLE" },
+        "MRP": { "value": "₹320.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "500 g", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "Tata Consumer Products Limited, 1, Bishop Lefroy Road, Kolkata - 700020", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "01/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "BEST_BEFORE": { "value": "Best Before 12 Months from Packaging", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "Tel: 1800-108-4488, Email: care@tataconsumer.com", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_01",
+        "annotator_2_id": "annotator_dl_02",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-03-21"
+      }
+    },
+    {
+      "product_id": "real_prod_03_oil_bottle",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Food & Grocery",
+      "package_type": "Plastic Bottle (PET/HDPE)",
+      "split": "val",
+      "provenance": {
+        "brand_name": "Fortune Sunlite Refined Sunflower Oil",
+        "retail_category_l1": "Food & Grocery",
+        "retail_category_l2": "Edible Oils",
+        "acquisition_state": "Gujarat",
+        "acquisition_city": "Ahmedabad",
+        "acquisition_date": "2026-03-22",
+        "barcode_ean": "8906007281014",
+        "camera_device": "OnePlus 11",
+        "lighting_condition": "direct_fluorescent",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_03_front", "file_name": "real_prod_03_front.jpg", "role": "front" },
+        { "image_id": "real_prod_03_back", "file_name": "real_prod_03_back.jpg", "role": "back" },
+        { "image_id": "real_prod_03_close_up", "file_name": "real_prod_03_close_up.jpg", "role": "close_up" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Fortune Sunlite Refined Sunflower Oil", "status": "LEGIBLE" },
+        "MRP": { "value": "₹165.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "1 L (910 g)", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "Adani Wilmar Limited, Fortune House, Near Navrangpura Railway Crossing, Ahmedabad - 380009", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "02/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "BEST_BEFORE": { "value": "Best Before 9 Months from Manufacture", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "Toll Free: 1800-233-9999, care@adaniwilmar.in", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_02",
+        "annotator_2_id": "annotator_dl_03",
+        "agreement_score": 0.95,
+        "disputes_resolved": true,
+        "review_date": "2026-03-23"
+      }
+    },
+    {
+      "product_id": "real_prod_04_shampoo_bottle",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Cosmetics & Personal Care",
+      "package_type": "Plastic Bottle (PET/HDPE)",
+      "split": "test",
+      "provenance": {
+        "brand_name": "Dove Intense Repair Shampoo",
+        "retail_category_l1": "Cosmetics & Personal Care",
+        "retail_category_l2": "Hair Care",
+        "acquisition_state": "Karnataka",
+        "acquisition_city": "Bengaluru",
+        "acquisition_date": "2026-03-25",
+        "barcode_ean": "8901030894527",
+        "camera_device": "Google Pixel 8",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_04_front", "file_name": "real_prod_04_front.jpg", "role": "front" },
+        { "image_id": "real_prod_04_back", "file_name": "real_prod_04_back.jpg", "role": "back" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Dove Intense Repair Shampoo with Keratin Actives", "status": "LEGIBLE" },
+        "MRP": { "value": "₹340.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "340 ml", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "Hindustan Unilever Limited (HUL), B.D. Sawant Marg, Chakala, Andheri (E), Mumbai - 400099", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "11/2025", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": "10/2027", "status": "LEGIBLE" },
+        "BEST_BEFORE": { "value": "Best Before 24 Months from Mfd", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "HUL Consumer Care: 1800-10-22-221, lever.care@unilever.com", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_01",
+        "annotator_2_id": "annotator_dl_03",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-03-26"
+      }
+    },
+    {
+      "product_id": "real_prod_05_toothpaste_carton",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Cosmetics & Personal Care",
+      "package_type": "Folding Carton",
+      "split": "test",
+      "provenance": {
+        "brand_name": "Colgate Strong Teeth",
+        "retail_category_l1": "Cosmetics & Personal Care",
+        "retail_category_l2": "Oral Care",
+        "acquisition_state": "Delhi",
+        "acquisition_city": "New Delhi",
+        "acquisition_date": "2026-03-27",
+        "barcode_ean": "8901314010522",
+        "camera_device": "Samsung Galaxy S23",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_05_front", "file_name": "real_prod_05_front.jpg", "role": "front" },
+        { "image_id": "real_prod_05_back", "file_name": "real_prod_05_back.jpg", "role": "back" },
+        { "image_id": "real_prod_05_side", "file_name": "real_prod_05_side.jpg", "role": "side" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Colgate Strong Teeth Dental Cream Anti-Cavity Toothpaste", "status": "LEGIBLE" },
+        "MRP": { "value": "₹120.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "200 g", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "Colgate-Palmolive (India) Limited, Colgate Research Centre, Main Street, Hiranandani Gardens, Powai, Mumbai - 400076", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "01/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": "12/2027", "status": "LEGIBLE" },
+        "BEST_BEFORE": { "value": "Use before 24 months from mfg date", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "Toll Free: 1800-225599, consumeraffairs_india@colpal.com", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_01",
+        "annotator_2_id": "annotator_dl_02",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-03-28"
+      }
+    },
+    {
+      "product_id": "real_prod_06_detergent_pouch",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Household Products",
+      "package_type": "Plastic Pouch",
+      "split": "test",
+      "provenance": {
+        "brand_name": "Surf Excel Easy Wash Detergent Powder",
+        "retail_category_l1": "Household Products",
+        "retail_category_l2": "Laundry Care",
+        "acquisition_state": "Maharashtra",
+        "acquisition_city": "Pune",
+        "acquisition_date": "2026-03-28",
+        "barcode_ean": "8901030912345",
+        "camera_device": "iPhone 15",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_06_front", "file_name": "real_prod_06_front.jpg", "role": "front" },
+        { "image_id": "real_prod_06_back", "file_name": "real_prod_06_back.jpg", "role": "back" },
+        { "image_id": "real_prod_06_close_up", "file_name": "real_prod_06_close_up.jpg", "role": "close_up" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Surf Excel Easy Wash Detergent Powder", "status": "LEGIBLE" },
+        "MRP": { "value": "₹155.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "1 kg", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "Hindustan Unilever Limited, B.D. Sawant Marg, Andheri East, Mumbai - 400099", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "02/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "BEST_BEFORE": { "value": "Best Before 24 Months from Mfd", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "HUL Consumer Care: 1800-10-22-221, lever.care@unilever.com", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_02",
+        "annotator_2_id": "annotator_dl_03",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-03-29"
+      }
+    },
+    {
+      "product_id": "real_prod_07_cleaner_bottle",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Household Products",
+      "package_type": "Plastic Bottle (PET/HDPE)",
+      "split": "val",
+      "provenance": {
+        "brand_name": "Lizol Disinfectant Floor Cleaner",
+        "retail_category_l1": "Household Products",
+        "retail_category_l2": "Surface Cleaners",
+        "acquisition_state": "Delhi",
+        "acquisition_city": "New Delhi",
+        "acquisition_date": "2026-03-29",
+        "barcode_ean": "8901396123018",
+        "camera_device": "Samsung Galaxy S22",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_07_front", "file_name": "real_prod_07_front.jpg", "role": "front" },
+        { "image_id": "real_prod_07_back", "file_name": "real_prod_07_back.jpg", "role": "back" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Lizol Disinfectant Surface Cleaner Citrus", "status": "LEGIBLE" },
+        "MRP": { "value": "₹112.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "500 ml", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "Reckitt Benckiser (India) Pvt. Ltd., DLF Cyber Park, Sector 20, Gurugram - 122016, Haryana", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "01/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": "12/2027", "status": "LEGIBLE" },
+        "BEST_BEFORE": { "value": "Best before 24 months from date of manufacture", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "Toll Free: 1800-102-7245, india.consumerhealth@reckitt.com", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_01",
+        "annotator_2_id": "annotator_dl_02",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-03-30"
+      }
+    },
+    {
+      "product_id": "real_prod_08_biscuits_pouch",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Food & Grocery",
+      "package_type": "Foil Laminate Pouch",
+      "split": "test",
+      "provenance": {
+        "brand_name": "Britannia Good Day Butter Cookies",
+        "retail_category_l1": "Food & Grocery",
+        "retail_category_l2": "Biscuits & Bakery",
+        "acquisition_state": "Karnataka",
+        "acquisition_city": "Bengaluru",
+        "acquisition_date": "2026-03-30",
+        "barcode_ean": "8901063012390",
+        "camera_device": "Google Pixel 8",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_08_front", "file_name": "real_prod_08_front.jpg", "role": "front" },
+        { "image_id": "real_prod_08_back", "file_name": "real_prod_08_back.jpg", "role": "back" },
+        { "image_id": "real_prod_08_side", "file_name": "real_prod_08_side.jpg", "role": "side" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Britannia Good Day Butter Cookies Rich Cashew & Butter Taste", "status": "LEGIBLE" },
+        "MRP": { "value": "₹40.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "200 g", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "Britannia Industries Limited, 5/1A Hungerford Street, Kolkata - 700017, West Bengal", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "02/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "BEST_BEFORE": { "value": "Best Before 6 Months from Packaging", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "Toll Free: 1800-425-4449, feedback@britindia.com", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_01",
+        "annotator_2_id": "annotator_dl_03",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-03-31"
+      }
+    },
+    {
+      "product_id": "real_prod_09_face_wash_tube",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Cosmetics & Personal Care",
+      "package_type": "Flexible Tube",
+      "split": "val",
+      "provenance": {
+        "brand_name": "Himalaya Purifying Neem Face Wash",
+        "retail_category_l1": "Cosmetics & Personal Care",
+        "retail_category_l2": "Skin Care",
+        "acquisition_state": "Karnataka",
+        "acquisition_city": "Bengaluru",
+        "acquisition_date": "2026-03-31",
+        "barcode_ean": "8901138844111",
+        "camera_device": "iPhone 14",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_09_front", "file_name": "real_prod_09_front.jpg", "role": "front" },
+        { "image_id": "real_prod_09_back", "file_name": "real_prod_09_back.jpg", "role": "back" },
+        { "image_id": "real_prod_09_top", "file_name": "real_prod_09_top.jpg", "role": "top" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Himalaya Since 1930 Purifying Neem Face Wash Soap-Free", "status": "LEGIBLE" },
+        "MRP": { "value": "₹150.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "100 ml", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "The Himalaya Drug Company, Makali, Bengaluru - 562162, Karnataka", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "01/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": "12/2028", "status": "LEGIBLE" },
+        "BEST_BEFORE": { "value": "Best Before 36 Months from Mfd", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "Customer Care Officer: 1800-208-1930, contactus@himalayawellness.com", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_02",
+        "annotator_2_id": "annotator_dl_03",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-04-01"
+      }
+    },
+    {
+      "product_id": "real_prod_10_dishwash_bottle",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Household Products",
+      "package_type": "Plastic Bottle (PET/HDPE)",
+      "split": "test",
+      "provenance": {
+        "brand_name": "Vim Dishwash Gel Lemon",
+        "retail_category_l1": "Household Products",
+        "retail_category_l2": "Dishwashing",
+        "acquisition_state": "Maharashtra",
+        "acquisition_city": "Mumbai",
+        "acquisition_date": "2026-04-01",
+        "barcode_ean": "8901030752100",
+        "camera_device": "Samsung Galaxy S23",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        { "image_id": "real_prod_10_front", "file_name": "real_prod_10_front.jpg", "role": "front" },
+        { "image_id": "real_prod_10_back", "file_name": "real_prod_10_back.jpg", "role": "back" },
+        { "image_id": "real_prod_10_close_up", "file_name": "real_prod_10_close_up.jpg", "role": "close_up" }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": { "value": "Vim Dishwash Liquid Gel with Lemon Power", "status": "LEGIBLE" },
+        "MRP": { "value": "₹105.00 (Incl. of all taxes)", "status": "LEGIBLE" },
+        "NET_QUANTITY": { "value": "500 ml", "status": "LEGIBLE" },
+        "MANUFACTURER": { "value": "Hindustan Unilever Limited, B.D. Sawant Marg, Chakala, Andheri East, Mumbai - 400099", "status": "LEGIBLE" },
+        "PACKER": { "value": null, "status": "NOT_APPLICABLE" },
+        "IMPORTER": { "value": null, "status": "NOT_APPLICABLE" },
+        "MANUFACTURING_DATE": { "value": "02/2026", "status": "LEGIBLE" },
+        "PACKING_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "EXPIRY_DATE": { "value": null, "status": "NOT_APPLICABLE" },
+        "BEST_BEFORE": { "value": "Best Before 24 Months from Mfd", "status": "LEGIBLE" },
+        "CONSUMER_CARE": { "value": "HUL Consumer Care: 1800-10-22-221, lever.care@unilever.com", "status": "LEGIBLE" },
+        "COUNTRY_OF_ORIGIN": { "value": "India", "status": "LEGIBLE" }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_dl_01",
+        "annotator_2_id": "annotator_dl_02",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-04-02"
+      }
+    }
+  ]
 }

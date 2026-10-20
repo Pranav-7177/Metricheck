@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, PlusCircle, LayoutDashboard, BookOpen, AlertCircle } from 'lucide-react';
+import { ShieldCheck, PlusCircle, LayoutDashboard, BookOpen, AlertCircle, Smartphone } from 'lucide-react';
 
 export default function Navbar({ activeTab, onTabChange }) {
   return (
@@ -41,7 +41,7 @@ export default function Navbar({ activeTab, onTabChange }) {
           </div>
 
           {/* Navigation Links */}
-          <nav className="flex items-center gap-2 sm:gap-4">
+          <nav className="flex items-center gap-2 sm:gap-3">
             <button
               onClick={() => onTabChange("dashboard")}
               className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
@@ -55,6 +55,18 @@ export default function Navbar({ activeTab, onTabChange }) {
             </button>
 
             <button
+              onClick={() => onTabChange("mobile")}
+              className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
+                activeTab === "mobile"
+                  ? "bg-purple-50 text-purple-700 font-bold border border-purple-200"
+                  : "text-slate-600 hover:text-purple-700 hover:bg-purple-50/50"
+              }`}
+            >
+              <Smartphone className="w-4 h-4 text-purple-600" />
+              <span className="hidden xs:inline">Mobile Edge</span>
+            </button>
+
+            <button
               onClick={() => onTabChange("rules")}
               className={`flex items-center gap-1.5 px-3 py-2 text-sm font-medium rounded-lg transition-colors cursor-pointer ${
                 activeTab === "rules"
@@ -63,7 +75,7 @@ export default function Navbar({ activeTab, onTabChange }) {
               }`}
             >
               <BookOpen className="w-4 h-4" />
-              <span>Rules Explorer</span>
+              <span className="hidden sm:inline">Rules Explorer</span>
             </button>
 
             <button

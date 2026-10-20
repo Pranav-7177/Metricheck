@@ -41,7 +41,20 @@ class ComplianceEngine:
                 "source_image_id": getattr(d, "source_image_id", None),
                 "source_ocr_ids": getattr(d, "source_ocr_ids", []) or [],
                 "bounding_box": getattr(d, "bounding_box", None),
+                "estimated_font_height_mm": getattr(d, "estimated_font_height_mm", None),
+                "required_font_height_mm": getattr(d, "required_font_height_mm", None),
+                "measurement_confidence": getattr(d, "measurement_confidence", "UNCALIBRATED"),
+                "visual_evidence": (
+                    getattr(d, "visual_evidence", None)
+                    or ((getattr(d, "evidence", {}) or {}).get("visual_evidence") if hasattr(d, "evidence") else None)
+                ),
             }
+            if isinstance(d, dict):
+                for k in ("estimated_font_height_mm", "required_font_height_mm", "measurement_confidence"):
+                    if k in d:
+                        d_dict[k] = d[k]
+                d_dict["visual_evidence"] = d.get("visual_evidence") or (d.get("evidence", {}) or {}).get("visual_evidence")
+
             f_name = (d.get("field_name") if isinstance(d, dict) else getattr(d, "field_name", "")).upper()
             effective_status = (
                 (d.get("extraction_status") if isinstance(d, dict) else getattr(d, "extraction_status", None))

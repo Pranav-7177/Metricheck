@@ -28,13 +28,20 @@ class ImageType(str, enum.Enum):
     FRONT = "FRONT"
     BACK = "BACK"
     SIDE = "SIDE"
+    LEFT_SIDE = "LEFT_SIDE"
+    RIGHT_SIDE = "RIGHT_SIDE"
+    TOP = "TOP"
+    BOTTOM = "BOTTOM"
     CLOSE_UP = "CLOSE_UP"
     OTHER = "OTHER"
+    UNKNOWN = "UNKNOWN"
 
 class ImageQualityStatus(str, enum.Enum):
     GOOD = "GOOD"
     ACCEPTABLE = "ACCEPTABLE"
+    DEGRADED = "DEGRADED"
     POOR = "POOR"
+    UNSUITABLE = "UNSUITABLE"
     CRITICAL_ISSUES = "CRITICAL_ISSUES"
 
 class ExtractionStatus(str, enum.Enum):
@@ -42,6 +49,7 @@ class ExtractionStatus(str, enum.Enum):
     NOT_FOUND = "NOT_FOUND"
     AMBIGUOUS = "AMBIGUOUS"
     LOW_CONFIDENCE = "LOW_CONFIDENCE"
+    UNABLE_TO_VERIFY = "UNABLE_TO_VERIFY"
 
 class ProductCategory(Base):
     __tablename__ = "product_categories"
@@ -97,6 +105,10 @@ class Scan(Base):
     analysis_step = Column(String(50), default="COMPLETED") # UPLOADING, QUALITY_CHECK, PREPROCESSING, OCR, EXTRACTION, RULES, VISUAL_CHECKS, REPORT_GENERATION, COMPLETED
     is_demo = Column(Boolean, default=False)
 
+    # Master Prompt 10 Reliability & Coverage summaries
+    scan_reliability = Column(JSON, nullable=True)
+    coverage_summary = Column(JSON, nullable=True)
+
     category_rel = relationship("ProductCategory", back_populates="scans")
     images = relationship("ScanImage", back_populates="scan_rel", cascade="all, delete-orphan")
     declarations = relationship("ExtractedDeclaration", back_populates="scan_rel", cascade="all, delete-orphan")
@@ -109,8 +121,8 @@ class ScanImage(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     scan_id = Column(Integer, ForeignKey("scans.id"), nullable=False)
-    image_role = Column(String(20), default="front") # front, back, side, close_up
-    image_type = Column(String(30), default="FRONT") # FRONT, BACK, SIDE, CLOSE_UP, OTHER
+    image_role = Column(String(20), default="front") # front, back, side, close_up, left_side, right_side, top, bottom, unknown
+    image_type = Column(String(30), default="FRONT") # FRONT, BACK, SIDE, LEFT_SIDE, RIGHT_SIDE, TOP, BOTTOM, CLOSE_UP, OTHER, UNKNOWN
     file_path = Column(String(500), nullable=False)
     preprocessed_file_path = Column(String(500), nullable=True)
     original_filename = Column(String(255), nullable=True)
@@ -125,6 +137,16 @@ class ScanImage(Base):
     resolution_h = Column(Integer, default=0)
     quality_notes = Column(Text, nullable=True)
     preprocessing_status = Column(String(50), default="NOT_REQUIRED") # NOT_REQUIRED, APPLIED, FAILED
+    quality_decision = Column(String(30), default="ACCEPTABLE") # ACCEPTABLE, DEGRADED, UNSUITABLE
+    retake_guidance = Column(JSON, nullable=True) # list of actionable guidance strings
+
+    # Deterministic Identity and Duplicate Relationships
+    content_hash = Column(String(64), nullable=True, index=True) # SHA-256
+    perceptual_hash = Column(String(64), nullable=True) # dHash
+    is_duplicate = Column(Boolean, default=False)
+    duplicate_of_id = Column(Integer, nullable=True)
+    duplicate_type = Column(String(30), nullable=True) # EXACT, NEAR_DUPLICATE
+    duplicate_reason = Column(Text, nullable=True)
 
     # OCR Execution Metrics
     ocr_status = Column(String(50), default="PENDING") # PENDING, COMPLETED, NO_TEXT_DETECTED, FAILED
@@ -191,7 +213,14 @@ class ExtractedDeclaration(Base):
     required_font_height_mm = Column(Float, nullable=True)
     measurement_confidence = Column(String(30), default="ESTIMATED") # ESTIMATED, VERIFIED, UNCALIBRATED
 
+    @property
+    def visual_evidence(self):
+        if self.evidence and isinstance(self.evidence, dict):
+            return self.evidence.get("visual_evidence")
+        return None
+
     scan_rel = relationship("Scan", back_populates="declarations")
+
 
 class RuleValidationResult(Base):
     __tablename__ = "rule_validation_results"

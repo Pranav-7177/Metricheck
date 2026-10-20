@@ -74,17 +74,34 @@ def evaluate_mfg_or_packing_present(decl: Optional[Dict[str, Any]], all_decls: D
             rule_reference=ref
         )
 
-    if (mfg and mfg.get("extraction_status") == "AMBIGUOUS") or (pkd and pkd.get("extraction_status") == "AMBIGUOUS"):
+    if (mfg and (mfg.get("extraction_status") == "UNABLE_TO_VERIFY" or mfg.get("status") == "UNABLE_TO_VERIFY")) or \
+       (pkd and (pkd.get("extraction_status") == "UNABLE_TO_VERIFY" or pkd.get("status") == "UNABLE_TO_VERIFY")):
         return EvaluatedRuleResult(
             rule_id=rule_id,
             field_name=field_name,
             status="NOT_VERIFIABLE",
             severity=severity,
-            message="Date detected without contextual indicator (MFD/PKD). Ambiguous date cannot be verified without confirmation.",
+            message="Relevant evidence appears to be present, but the declaration could not be reliably read or verified.",
+            field_value=(mfg or pkd).get("detected_value"),
+            confidence=0.0,
+            evidence=(mfg or pkd).get("evidence", {}),
+            rule_reference=ref,
+            suggested_action="Capture a clearer close-up image of the declaration."
+        )
+
+    if (mfg and mfg.get("extraction_status") == "AMBIGUOUS") or (pkd and pkd.get("extraction_status") == "AMBIGUOUS") or \
+       (mfg and mfg.get("has_conflict")) or (pkd and pkd.get("has_conflict")):
+        return EvaluatedRuleResult(
+            rule_id=rule_id,
+            field_name=field_name,
+            status="NOT_VERIFIABLE",
+            severity=severity,
+            message="Multiple conflicting or plausible values were detected. Manual review is required.",
             field_value=(mfg or pkd).get("detected_value"),
             confidence=0.5,
             evidence=(mfg or pkd).get("evidence", {}),
-            rule_reference=ref
+            rule_reference=ref,
+            suggested_action="Review the conflicting values across the submitted images."
         )
 
     return EvaluatedRuleResult(
@@ -92,11 +109,12 @@ def evaluate_mfg_or_packing_present(decl: Optional[Dict[str, Any]], all_decls: D
         field_name=field_name,
         status="NOT_VERIFIABLE",
         severity=severity,
-        message="Neither manufacturing date nor packaging date declaration was detected.",
+        message="No sufficiently reliable evidence for this declaration was detected in the submitted images.",
         field_value=None,
         confidence=0.0,
         evidence={},
-        rule_reference=ref
+        rule_reference=ref,
+        suggested_action="Capture the package panel where this declaration is expected."
     )
 
 

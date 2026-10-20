@@ -1,0 +1,131 @@
+{
+  "$schema": "../metadata/dataset_schema.json",
+  "manifest_version": "2.1.0",
+  "template_description": "Standardized submission template for MetriCheck genuine retail packaged commodity validation dataset (Target: 50-100 commodities).",
+  "catalog_entries": [
+    {
+      "product_id": "real_prod_TEMPLATE_01",
+      "dataset_type": "REAL_PHOTO",
+      "category": "Food & Grocery",
+      "package_type": "Plastic Pouch",
+      "split": "test",
+      "provenance": {
+        "brand_name": "Example Brand Atta / Rice / Biscuit",
+        "retail_category_l1": "Food & Grocery",
+        "retail_category_l2": "Flour & Staples",
+        "acquisition_state": "Maharashtra",
+        "acquisition_city": "Mumbai",
+        "acquisition_date": "2026-04-10",
+        "barcode_ean": "8901234567890",
+        "camera_device": "Samsung Galaxy S23 / iPhone 14 / Pixel 8",
+        "lighting_condition": "diffuse_daylight",
+        "capture_angle": "perpendicular",
+        "package_condition": "pristine"
+      },
+      "images": [
+        {
+          "image_id": "real_prod_TEMPLATE_01_front",
+          "file_name": "real_prod_TEMPLATE_01_front.jpg",
+          "role": "front",
+          "is_calibrated": false,
+          "reference_type": null,
+          "reference_dimension_mm": null
+        },
+        {
+          "image_id": "real_prod_TEMPLATE_01_back",
+          "file_name": "real_prod_TEMPLATE_01_back.jpg",
+          "role": "back",
+          "is_calibrated": false,
+          "reference_type": null,
+          "reference_dimension_mm": null
+        },
+        {
+          "image_id": "real_prod_TEMPLATE_01_side",
+          "file_name": "real_prod_TEMPLATE_01_side.jpg",
+          "role": "side",
+          "is_calibrated": false,
+          "reference_type": null,
+          "reference_dimension_mm": null
+        },
+        {
+          "image_id": "real_prod_TEMPLATE_01_closeup_mrp",
+          "file_name": "real_prod_TEMPLATE_01_closeup_mrp.jpg",
+          "role": "close_up",
+          "is_calibrated": true,
+          "reference_type": "reference_id_card_width",
+          "reference_dimension_mm": 85.6
+        }
+      ],
+      "ground_truth": {
+        "PRODUCT_NAME": {
+          "value": "Example Whole Wheat Atta 5kg",
+          "status": "LEGIBLE",
+          "bounding_box": { "x_rel": 0.12, "y_rel": 0.18, "w_rel": 0.75, "h_rel": 0.08 }
+        },
+        "MRP": {
+          "value": "₹245.00 (Incl. of all taxes)",
+          "status": "LEGIBLE",
+          "bounding_box": { "x_rel": 0.55, "y_rel": 0.82, "w_rel": 0.38, "h_rel": 0.05 }
+        },
+        "NET_QUANTITY": {
+          "value": "5 kg",
+          "status": "LEGIBLE",
+          "bounding_box": { "x_rel": 0.15, "y_rel": 0.82, "w_rel": 0.25, "h_rel": 0.05 }
+        },
+        "MANUFACTURER": {
+          "value": "Example Consumer Goods Ltd, Plot 42, Industrial Area, Andheri East, Mumbai 400093",
+          "status": "LEGIBLE",
+          "bounding_box": { "x_rel": 0.08, "y_rel": 0.45, "w_rel": 0.84, "h_rel": 0.12 }
+        },
+        "PACKER": {
+          "value": null,
+          "status": "NOT_APPLICABLE",
+          "bounding_box": null
+        },
+        "IMPORTER": {
+          "value": null,
+          "status": "NOT_APPLICABLE",
+          "bounding_box": null
+        },
+        "MANUFACTURING_DATE": {
+          "value": "03/2026",
+          "status": "LEGIBLE",
+          "bounding_box": { "x_rel": 0.55, "y_rel": 0.75, "w_rel": 0.22, "h_rel": 0.04 }
+        },
+        "PACKING_DATE": {
+          "value": null,
+          "status": "NOT_APPLICABLE",
+          "bounding_box": null
+        },
+        "EXPIRY_DATE": {
+          "value": null,
+          "status": "NOT_APPLICABLE",
+          "bounding_box": null
+        },
+        "BEST_BEFORE": {
+          "value": "Best Before 6 Months from Manufacture",
+          "status": "LEGIBLE",
+          "bounding_box": { "x_rel": 0.55, "y_rel": 0.78, "w_rel": 0.35, "h_rel": 0.04 }
+        },
+        "CONSUMER_CARE": {
+          "value": "Toll Free: 1800-123-4567, email: care@example.com",
+          "status": "LEGIBLE",
+          "bounding_box": { "x_rel": 0.08, "y_rel": 0.65, "w_rel": 0.84, "h_rel": 0.08 }
+        },
+        "COUNTRY_OF_ORIGIN": {
+          "value": "India",
+          "status": "LEGIBLE",
+          "bounding_box": { "x_rel": 0.08, "y_rel": 0.75, "w_rel": 0.30, "h_rel": 0.04 }
+        }
+      },
+      "multi_annotator_review": {
+        "annotator_1_id": "annotator_01",
+        "annotator_2_id": "annotator_02",
+        "adjudicator_id": "adjudicator_lead",
+        "agreement_score": 1.0,
+        "disputes_resolved": true,
+        "review_date": "2026-04-12"
+      }
+    }
+  ]
+}
